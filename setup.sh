@@ -50,7 +50,7 @@ echo "📋 Installing server..."
 cp server.py ~/.claude-mcp-servers/gemini-collab/
 
 # Replace API key in server
-sed -i.bak "s/YOUR_API_KEY_HERE/$API_KEY/g" ~/.claude-mcp-servers/gemini-collab/server.py
+sed -i.bak 's/os.environ.get("GEMINI_API_KEY", "YOUR_API_KEY_HERE")/os.environ.get("GEMINI_API_KEY", "'$API_KEY'")/' ~/.claude-mcp-servers/gemini-collab/server.py
 rm ~/.claude-mcp-servers/gemini-collab/server.py.bak
 
 # Install Python dependencies
