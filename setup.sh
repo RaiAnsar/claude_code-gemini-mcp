@@ -56,7 +56,12 @@ rm ~/.claude-mcp-servers/gemini-collab/server.py.bak
 # Install Python dependencies
 echo ""
 echo "📦 Installing Python dependencies..."
-pip3 install google-generativeai --quiet
+cd ~/.claude-mcp-servers/gemini-collab
+python3 -m venv venv
+source venv/bin/activate
+pip install google-generativeai --quiet
+deactivate
+cd -
 
 # Remove any existing MCP configuration
 echo ""
@@ -64,7 +69,7 @@ echo "🔧 Configuring Claude Code..."
 claude mcp remove gemini-collab 2>/dev/null || true
 
 # Add MCP server with global scope
-claude mcp add --scope user gemini-collab python3 ~/.claude-mcp-servers/gemini-collab/server.py
+claude mcp add --scope user gemini-collab ~/.claude-mcp-servers/gemini-collab/venv/bin/python ~/.claude-mcp-servers/gemini-collab/server.py
 
 echo ""
 echo -e "${GREEN}✅ Setup complete!${NC}"
