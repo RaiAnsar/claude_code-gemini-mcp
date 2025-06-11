@@ -49,22 +49,31 @@ mkdir -p ~/.claude-mcp-servers/gemini-collab
 echo "📋 Installing server..."
 cp server.py ~/.claude-mcp-servers/gemini-collab/
 
-# Replace API key in server
-sed -i.bak "s/YOUR_API_KEY_HERE/$API_KEY/g" ~/.claude-mcp-servers/gemini-collab/server.py
+# Replace API key in server (only replace the default value, not the check condition)
+sed -i.bak 's/os\.environ\.get("GEMINI_API_KEY", "YOUR_API_KEY_HERE")/os.environ.get("GEMINI_API_KEY", "'"$API_KEY"'")/' ~/.claude-mcp-servers/gemini-collab/server.py
 rm ~/.claude-mcp-servers/gemini-collab/server.py.bak
 
 # Install Python dependencies
 echo ""
-echo "📦 Installing Python dependencies..."
-pip3 install google-generativeai --quiet
+echo "📦 Installing Python dependencies in virtual environment..."
+# Check if we're in a virtual environment
+if [[ "$VIRTUAL_ENV" != "" ]]; then
+    echo "✅ Using virtual environment: $VIRTUAL_ENV"
+    pip install google-generativeai --quiet
+    PYTHON_PATH="$VIRTUAL_ENV/bin/python"
+else
+    echo "⚠️  No virtual environment detected, installing globally..."
+    pip3 install google-generativeai --quiet
+    PYTHON_PATH="python3"
+fi
 
 # Remove any existing MCP configuration
 echo ""
 echo "🔧 Configuring Claude Code..."
 claude mcp remove gemini-collab 2>/dev/null || true
 
-# Add MCP server with global scope
-claude mcp add --scope user gemini-collab python3 ~/.claude-mcp-servers/gemini-collab/server.py
+# Add MCP server with proper Python path
+claude mcp add --scope user gemini-collab "$PYTHON_PATH" ~/.claude-mcp-servers/gemini-collab/server.py
 
 echo ""
 echo -e "${GREEN}✅ Setup complete!${NC}"
