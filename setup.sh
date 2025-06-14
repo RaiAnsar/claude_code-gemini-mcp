@@ -49,9 +49,31 @@ mkdir -p ~/.claude-mcp-servers/gemini-collab
 echo "📋 Installing server..."
 cp server.py ~/.claude-mcp-servers/gemini-collab/
 
-# Replace API key in server
-sed -i.bak "s/YOUR_API_KEY_HERE/$API_KEY/g" ~/.claude-mcp-servers/gemini-collab/server.py
-rm ~/.claude-mcp-servers/gemini-collab/server.py.bak
+# Set environment variable persistently
+echo "🔧 Setting up persistent environment variable..."
+
+# Detect shell and appropriate profile file
+if [ -n "$ZSH_VERSION" ]; then
+    PROFILE_FILE="$HOME/.zshrc"
+elif [ -n "$BASH_VERSION" ]; then
+    if [ -f "$HOME/.bashrc" ]; then
+        PROFILE_FILE="$HOME/.bashrc"
+    else
+        PROFILE_FILE="$HOME/.bash_profile"
+    fi
+else
+    # Fallback to .profile for other shells
+    PROFILE_FILE="$HOME/.profile"
+fi
+
+# Remove any existing CLAUDE_GEMINI_MCP_API_KEY entries
+sed -i.bak '/^export CLAUDE_GEMINI_MCP_API_KEY=/d' "$PROFILE_FILE" 2>/dev/null || true
+rm -f "$PROFILE_FILE.bak" 2>/dev/null || true
+
+# Add the new API key
+echo "export CLAUDE_GEMINI_MCP_API_KEY=\"$API_KEY\"" >> "$PROFILE_FILE"
+
+echo "✅ API key added to $PROFILE_FILE"
 
 # Install Python dependencies
 echo ""

@@ -59,7 +59,8 @@ Or simply ask claude code to correlate with Gemini, it is not a rocket sciene...
 1. Installs the Google Gemini Python SDK
 2. Sets up an MCP server that bridges Claude Code and Gemini
 3. Configures it globally (works in any directory)
-4. Provides tools for collaboration between Claude and Gemini
+4. Sets up persistent environment variable for secure API key storage
+5. Provides tools for collaboration between Claude and Gemini
 
 ## 🔧 Available Tools
 
@@ -86,10 +87,42 @@ claude mcp add --scope user gemini-collab python3 ~/.claude-mcp-servers/gemini-c
 **Connection errors?**
 - Check your API key is valid
 - Ensure Python has `google-generativeai` installed: `pip install google-generativeai`
+- Verify environment variable is set: `echo $CLAUDE_GEMINI_MCP_API_KEY`
 
 ## 🔑 Update API Key
 
-Edit `~/.claude-mcp-servers/gemini-collab/server.py` and replace the API key.
+To update your API key, add it to your shell profile:
+
+```bash
+# For bash users
+echo 'export CLAUDE_GEMINI_MCP_API_KEY="your_new_api_key"' >> ~/.bashrc
+source ~/.bashrc
+
+# For zsh users  
+echo 'export CLAUDE_GEMINI_MCP_API_KEY="your_new_api_key"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Or simply re-run the setup script with your new API key.
+
+## 🔄 Upgrading Gemini Model
+
+To upgrade to a newer Gemini model version, edit the server file:
+
+```bash
+# Edit the server file
+nano ~/.claude-mcp-servers/gemini-collab/server.py
+
+# Find this line (around line 36):
+model = genai.GenerativeModel('gemini-2.5-flash-preview-05-20')
+
+# Replace with your desired model, for example:
+model = genai.GenerativeModel('gemini-2.5-flash')
+model = genai.GenerativeModel('gemini-1.5-pro')
+model = genai.GenerativeModel('gemini-1.5-flash')
+```
+
+After editing, restart Claude Code to apply changes.
 
 ## 🤝 Contributing
 
