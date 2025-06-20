@@ -51,6 +51,11 @@ mcp__gemini-collab__gemini_code_review
 mcp__gemini-collab__gemini_brainstorm
   topic: "How to scale a web app to 1M users"
 
+# Use a specific model (New Feature)
+mcp__gemini-collab__ask_gemini
+  prompt: "Analyze this long document..."
+  model: "gemini-1.5-pro-latest"  # For long context tasks
+
 Or simply ask claude code to correlate with Gemini, it is not a rocket sciene... (Author's note) 
 ```
 
@@ -90,6 +95,26 @@ claude mcp add --scope user gemini-collab python3 ~/.claude-mcp-servers/gemini-c
 ## 🔑 Update API Key
 
 Edit `~/.claude-mcp-servers/gemini-collab/server.py` and replace the API key.
+
+## 📝 System Prompt Support (New Feature)
+
+Add a system prompt to customize Gemini's behavior (like CLAUDE.md for Claude).
+
+1. Create `~/.claude-mcp-servers/gemini-collab/GEMINI.md`
+2. Add your instructions
+3. Restart Claude Code
+
+That's it! Gemini will use your instructions automatically.
+
+## 🤖 Model Selection (New Feature)
+
+Use different Gemini models for different tasks:
+
+- **gemini-1.5-pro-latest** - For long documents (up to 1M tokens)
+- **gemini-2.0-flash** - Default, fast and smart
+- **gemini-2.0-flash-lite** - For quick responses
+
+Just add `model: "gemini-1.5-pro-latest"` to your request!
 
 ## 🤝 Contributing
 
